@@ -16,7 +16,7 @@ local humanoid = character:WaitForChild("Humanoid")
 local mouse = player:GetMouse()
 mouse.TargetFilter = workspace.Effects
 
-local abilityName = "Template"
+local abilityName = "TheSocialCrediter"
 
 local cooldowns = {}
 local holding = false
