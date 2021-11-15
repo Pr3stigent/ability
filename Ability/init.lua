@@ -2,7 +2,12 @@ local RunService =  game:GetService("RunService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
-local Abilities = require(script:WaitForChild("Abilities", 10))
+local Abilities = {}
+for _, moduleScript in ipairs(script:GetChildren()) do
+	if moduleScript:IsA("ModuleScript") then
+		Abilities[moduleScript.Name] = require(moduleScript)
+	end
+end
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -11,7 +16,7 @@ local humanoid = character:WaitForChild("Humanoid")
 local mouse = player:GetMouse()
 mouse.TargetFilter = workspace.Effects
 
-local abilityName = "Magu"
+local abilityName = "Template"
 
 local cooldowns = {}
 local holding = false
