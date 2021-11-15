@@ -2,7 +2,7 @@ local E = require(script.E)
 
 return {
 	Keys = {
-		V = {
+		E = {
 			Hold = true,
 			FaceMouse = true,
 			FullOrientation = true,
