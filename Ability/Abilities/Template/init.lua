@@ -7,14 +7,9 @@ return {
 			FaceMouse = true,
 			FullOrientation = true,
 			FaceSpeed = 2,
-
-			Initiate = function(...)
-				E.Initiate(...)
-			end,
-
-			Terminate = function(...)
-				E.Terminate(...)
-			end,
+			
+			Initiate = E.Initiate,
+			Terminate = E.Terminate,
 		}
 	},
 }
