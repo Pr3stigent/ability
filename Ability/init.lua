@@ -27,39 +27,35 @@ UserInputService.InputBegan:Connect(function(input, gameProccessedEvent)
 	end
 	
 	local ability = Abilities[abilityName]
-	if ability then
-		local abilityKey = ability.Keys[input.KeyCode.Name] or ability.Keys[input.UserInputType.Name]
+	if ability and not holding then
+		local abilityKey = ability.Keys[input.KeyCode] or ability.Keys[input.UserInputType]
 		if abilityKey then
-			if not cooldowns[input.KeyCode.Name] or os.clock() - cooldowns[input.KeyCode.Name] >= abilityKey.CooldownTime then
+			if not cooldowns[input.KeyCode] or os.clock() - cooldowns[input.KeyCode] >= abilityKey.CooldownTime then
 				if abilityKey.Hold then
-					if not holding then
-						holding = true
-						
-						humanoid.PlatformStand = true
-						
-						local connection; connection = RunService.RenderStepped:Connect(function(dt)
-							if holding then
-								local direction = abilityKey.FullOrientation and mouse.Hit.Position or Vector3.new(mouse.Hit.X, humanoid.RootPart.Position.Y, mouse.Hit.Z)
-								
-								humanoid.RootPart.CFrame = humanoid.RootPart.CFrame:Lerp(
-									CFrame.lookAt(humanoid.RootPart.Position, direction),
-									dt * abilityKey.FaceSpeed
-								)
-								
-								humanoid.RootPart.Anchored = true
-							else
-								connection:Disconnect()
-								connection = nil
-							end
-						end)
-						
-						abilityKey.Initiate({
-							Character = character,
-							Mouse = mouse,
-						})
-					end
+					holding = true
+					humanoid.PlatformStand = true
+					
+					local connection; connection = RunService.RenderStepped:Connect(function(dt)
+						if holding then
+							local direction = abilityKey.FullOrientation and mouse.Hit.Position or Vector3.new(mouse.Hit.X, humanoid.RootPart.Position.Y, mouse.Hit.Z)
+							
+							humanoid.RootPart.CFrame = humanoid.RootPart.CFrame:Lerp(
+								CFrame.lookAt(humanoid.RootPart.Position, direction),
+								dt * abilityKey.FaceSpeed
+							)
+							humanoid.RootPart.Anchored = true
+						else
+							connection:Disconnect()
+							connection = nil
+						end
+					end)
+					
+					abilityKey.Initiate({
+						Character = character,
+						Mouse = mouse,
+					})
 				else
-					cooldowns[input.KeyCode.Name] = os.clock()
+					cooldowns[input.KeyCode] = os.clock()
 				end
 			end
 		end
@@ -72,23 +68,20 @@ UserInputService.InputEnded:Connect(function(input, gameProccessedEvent)
 	end
 	
 	local ability = Abilities[abilityName]
-	if ability then
-		local abilityKey = ability.Keys[input.KeyCode.Name] or ability.Keys[input.UserInputType.Name]
-		if abilityKey then
-			if abilityKey.Hold then
-				if holding then
-					holding = false
-					cooldowns[input.KeyCode.Name] = os.clock()
-					humanoid.PlatformStand = false
-					
-					abilityKey.Terminate({
-						Character = character,
-						Mouse = mouse,
-					})
-					
-					humanoid.RootPart.Anchored = false
-				end
-			end
+	if ability and holding then
+		local abilityKey = ability.Keys[input.KeyCode] or ability.Keys[input.UserInputType]
+		if abilityKey and abilityKey.Hold then
+			holding = false
+			
+			cooldowns[input.KeyCode] = os.clock()
+			
+			abilityKey.Terminate({
+				Character = character,
+				Mouse = mouse,
+			})
+			
+			humanoid.PlatformStand = false
+			humanoid.RootPart.Anchored = false
 		end
 	end
 end)
